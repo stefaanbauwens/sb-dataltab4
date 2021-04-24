@@ -1,0 +1,358 @@
+VERSION 5.00
+Begin VB.PropertyPage SBTabsPropertyPage 
+   Caption         =   "SB Tabs Property Page"
+   ClientHeight    =   3495
+   ClientLeft      =   0
+   ClientTop       =   0
+   ClientWidth     =   5925
+   PaletteMode     =   0  'Halftone
+   ScaleHeight     =   3495
+   ScaleWidth      =   5925
+   Begin VB.CheckBox PropertyTabVisible 
+      Height          =   255
+      Left            =   3600
+      TabIndex        =   19
+      Top             =   1680
+      Width           =   255
+   End
+   Begin VB.HScrollBar ScrollTabsPerRow 
+      Height          =   300
+      Left            =   1710
+      Max             =   2
+      TabIndex        =   16
+      Top             =   840
+      Value           =   1
+      Width           =   495
+   End
+   Begin VB.CheckBox PropertyTabGoodState 
+      Height          =   255
+      Left            =   3600
+      TabIndex        =   14
+      Top             =   1380
+      Width           =   255
+   End
+   Begin VB.CheckBox PropertyTabEnabled 
+      Height          =   255
+      Left            =   3600
+      TabIndex        =   12
+      Top             =   1080
+      Width           =   255
+   End
+   Begin VB.HScrollBar ScrollActiveTab 
+      Height          =   300
+      Left            =   1710
+      Max             =   9
+      TabIndex        =   10
+      Top             =   1440
+      Width           =   495
+   End
+   Begin VB.HScrollBar ScrollTotalTabs 
+      Height          =   300
+      Left            =   1710
+      Max             =   2
+      TabIndex        =   6
+      Top             =   240
+      Value           =   1
+      Width           =   495
+   End
+   Begin VB.HScrollBar ScrollIndex 
+      Height          =   300
+      Left            =   4110
+      Max             =   9
+      TabIndex        =   5
+      Top             =   240
+      Width           =   495
+   End
+   Begin VB.TextBox PropertyTabCaption 
+      Height          =   300
+      Left            =   3600
+      TabIndex        =   1
+      Top             =   720
+      Width           =   2220
+   End
+   Begin VB.Label LabelTabVisible 
+      Caption         =   "Visible:"
+      Height          =   240
+      Left            =   2640
+      TabIndex        =   18
+      Top             =   1680
+      Width           =   900
+   End
+   Begin VB.Label LabelTabsPerRow 
+      Caption         =   "TabsPerRow:"
+      Height          =   240
+      Left            =   120
+      TabIndex        =   17
+      Top             =   840
+      Width           =   1020
+   End
+   Begin VB.Label PropertyTabsPerRow 
+      BackColor       =   &H80000005&
+      BorderStyle     =   1  'Fixed Single
+      Height          =   300
+      Left            =   1200
+      TabIndex        =   15
+      Top             =   840
+      Width           =   495
+   End
+   Begin VB.Label LabelTabGoodState 
+      Caption         =   "GoodState:"
+      Height          =   240
+      Left            =   2640
+      TabIndex        =   13
+      Top             =   1380
+      Width           =   900
+   End
+   Begin VB.Label LabelTabEnabled 
+      Caption         =   "Enabled:"
+      Height          =   240
+      Left            =   2640
+      TabIndex        =   11
+      Top             =   1080
+      Width           =   900
+   End
+   Begin VB.Label PropertyActiveTab 
+      BackColor       =   &H80000005&
+      BorderStyle     =   1  'Fixed Single
+      Height          =   300
+      Left            =   1200
+      TabIndex        =   9
+      Top             =   1440
+      Width           =   495
+   End
+   Begin VB.Label PropertyTotalTabs 
+      BackColor       =   &H80000005&
+      BorderStyle     =   1  'Fixed Single
+      Height          =   300
+      Left            =   1200
+      TabIndex        =   8
+      Top             =   240
+      Width           =   495
+   End
+   Begin VB.Label PropertyIndex 
+      BackColor       =   &H80000005&
+      BorderStyle     =   1  'Fixed Single
+      Height          =   300
+      Left            =   3600
+      TabIndex        =   7
+      Top             =   240
+      Width           =   495
+   End
+   Begin VB.Label LabelIndex 
+      Caption         =   "Index:"
+      Height          =   255
+      Left            =   2640
+      TabIndex        =   4
+      Top             =   240
+      Width           =   735
+   End
+   Begin VB.Label LabelActiveTab 
+      Caption         =   "ActiveTab:"
+      Height          =   240
+      Left            =   120
+      TabIndex        =   3
+      Top             =   1440
+      Width           =   780
+   End
+   Begin VB.Label LabelTotalTabs 
+      Caption         =   "Tabs:"
+      Height          =   240
+      Left            =   120
+      TabIndex        =   2
+      Top             =   270
+      Width           =   540
+   End
+   Begin VB.Label LabelTabCaption 
+      Caption         =   "Caption:"
+      Height          =   240
+      Left            =   2640
+      TabIndex        =   0
+      Top             =   750
+      Width           =   900
+   End
+End
+Attribute VB_Name = "SBTabsPropertyPage"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = False
+Attribute VB_Exposed = True
+
+Dim UpdateTabsPerRow As Boolean
+
+Private Sub PropertyPage_ApplyChanges()
+
+SelectedControls(0).ActiveTab = PropertyActiveTab.Caption
+SelectedControls(0).TotalTabs = PropertyTotalTabs.Caption
+SelectedControls(0).TabsPerRow = PropertyTabsPerRow.Caption
+SelectedControls(0).TabCaption(ScrollIndex.Value) = PropertyTabCaption.Text
+
+If PropertyTabEnabled.Value = 0 Then
+    SelectedControls(0).TabEnabled(ScrollIndex.Value) = False
+Else
+    SelectedControls(0).TabEnabled(ScrollIndex.Value) = True
+End If
+
+If PropertyTabGoodState.Value = 0 Then
+    SelectedControls(0).TabGoodState(ScrollIndex.Value) = False
+Else
+    SelectedControls(0).TabGoodState(ScrollIndex.Value) = True
+End If
+
+If PropertyTabVisible.Value = 0 Then
+    SelectedControls(0).TabVisible(ScrollIndex.Value) = False
+Else
+    SelectedControls(0).TabVisible(ScrollIndex.Value) = True
+End If
+
+UpdateTabsPerRow = True
+ScrollTabsPerRow.Value = 1
+UpdateTabsPerRow = False
+
+End Sub
+
+Private Sub PropertyPage_SelectionChanged()
+
+If SelectedControls(0).TotalTabs < 1 Then SelectedControls(0).TotalTabs = 1
+
+PropertyActiveTab.Caption = SelectedControls(0).ActiveTab
+PropertyTabsPerRow.Caption = SelectedControls(0).TabsPerRow
+PropertyTotalTabs.Caption = SelectedControls(0).TotalTabs
+
+ScrollIndex.Min = 0
+ScrollIndex.Max = SelectedControls(0).TotalTabs - 1
+ScrollIndex.Value = SelectedControls(0).ActiveTab
+
+ScrollActiveTab.Min = 0
+ScrollActiveTab.Max = ScrollIndex.Max
+ScrollActiveTab.Value = ScrollIndex.Value
+
+UpdateTabsPerRow = True
+ScrollTabsPerRow.Value = 1
+UpdateTabsPerRow = False
+
+ScrollTotalTabs.Value = 1
+
+Call ScrollIndex_Change
+
+End Sub
+
+Private Sub ScrollIndex_Change()
+
+PropertyIndex.Caption = ScrollIndex.Value
+PropertyTabCaption.Text = SelectedControls(0).TabCaption(ScrollIndex.Value)
+
+If SelectedControls(0).TabEnabled(ScrollIndex.Value) = True Then
+    PropertyTabEnabled.Value = 1
+Else
+    PropertyTabEnabled.Value = 0
+End If
+
+If SelectedControls(0).TabGoodState(ScrollIndex.Value) = True Then
+    PropertyTabGoodState.Value = 1
+Else
+    PropertyTabGoodState.Value = 0
+End If
+
+If SelectedControls(0).TabVisible(ScrollIndex.Value) = True Then
+    PropertyTabVisible.Value = 1
+Else
+    PropertyTabVisible.Value = 0
+End If
+
+End Sub
+
+Private Sub ScrollTotalTabs_Change()
+
+Dim ChangeMax As Integer
+
+ChangeMax = Val(PropertyTotalTabs.Caption)
+
+Select Case ScrollTotalTabs.Value
+    Case 0
+        If ChangeMax < 2 Then ChangeMax = 2
+        ChangeMax = ChangeMax - 1
+    Case 2
+        ChangeMax = ChangeMax + 1
+End Select
+
+PropertyTotalTabs.Caption = Trim$(Str$(ChangeMax))
+
+ScrollTotalTabs.Value = 1
+
+ChangeMax = ChangeMax - 1
+
+If ScrollIndex.Value > ChangeMax Then ScrollIndex.Value = ChangeMax
+If ScrollIndex.Max <> ChangeMax Then ScrollIndex.Max = ChangeMax
+
+If ScrollActiveTab.Value > ChangeMax Then ScrollActiveTab.Value = ChangeMax
+If ScrollActiveTab.Max <> ChangeMax Then ScrollActiveTab.Max = ChangeMax
+
+End Sub
+
+Private Sub ScrollActiveTab_Change()
+
+PropertyActiveTab.Caption = ScrollActiveTab.Value
+
+End Sub
+
+Private Sub ScrollTabsPerRow_Change()
+
+If UpdateTabsPerRow = True Then Exit Sub
+
+UpdateTabsPerRow = True
+
+Select Case ScrollTabsPerRow.Value
+    Case 0
+        PropertyTabsPerRow.Caption = Trim$(Str$(Val(PropertyTabsPerRow.Caption) - 1))
+        If Val(PropertyTabsPerRow.Caption) < 1 Then PropertyTabsPerRow.Caption = "0"
+    Case 2
+        PropertyTabsPerRow.Caption = Trim$(Str$(Val(PropertyTabsPerRow.Caption) + 1))
+End Select
+
+ScrollTabsPerRow.Value = 1
+
+UpdateTabsPerRow = False
+
+End Sub
+
+Private Sub PropertyActiveTab_Change()
+
+Changed = True
+
+End Sub
+
+Private Sub PropertyTotalTabs_Change()
+
+Changed = True
+
+End Sub
+
+Private Sub PropertyTabCaption_Change()
+
+Changed = True
+
+End Sub
+
+Private Sub PropertyTabEnabled_Click()
+
+Changed = True
+
+End Sub
+
+Private Sub PropertyTabGoodState_Click()
+
+Changed = True
+
+End Sub
+
+Private Sub PropertyTabVisible_Click()
+
+Changed = True
+
+End Sub
+
+Private Sub PropertyTabsPerRow_Click()
+
+Changed = True
+
+End Sub
